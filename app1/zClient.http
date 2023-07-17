@@ -18,3 +18,11 @@ Content-Type: application/json
     "name" : "Subahdip",
     "age": 30
 }
+
+
+
+###
+GET http://localhost:8000/admin
+
+###
+GET http://localhost:8000/admin/test

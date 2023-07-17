@@ -10,6 +10,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 type User struct {
@@ -51,6 +52,14 @@ func testRoute3(c echo.Context) error {
 	return c.String(http.StatusOK, string(userJson))
 }
 
+func homeAdmin(c echo.Context) error {
+	return c.String(http.StatusOK, "Admin home page")
+}
+
+func testAdmin(c echo.Context) error {
+	return c.String(http.StatusOK, "Admin test page")
+}
+
 func main() {
 	// ------ ENV file ----------//
 	err := godotenv.Load(".env")
@@ -65,6 +74,13 @@ func main() {
 	e.GET("/test", testRoute)
 	e.GET("/test2/:data", testRoute2)
 	e.POST("/test3", testRoute3)
+
+	// ------ routing group ------//
+	groupAdmin := e.Group("/admin", middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Format: "method=${method}, uri=${uri}, status=${status} latency=${latency}\n",
+	}))
+	groupAdmin.GET("", homeAdmin)
+	groupAdmin.GET("/test", testAdmin)
 
 	// ----------- running server ---------/
 	e.Logger.Fatal(e.Start(":" + PORT))
